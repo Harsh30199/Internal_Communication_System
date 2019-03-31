@@ -76,7 +76,7 @@ class App(Serializable, threading.Thread):
 		self.msg_label.grid(column=0, row=1, pady=10, sticky=tk.W+tk.E)
 		self.msg_area = tk.Text(self.root, height=6, width=58, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
 		self.msg_area.grid(column=0, row=2, padx=25, pady=10, sticky=tk.W+tk.E)
-
+		self.msg_area.focus()
 		self.send_button = tk.Button(self.root, text="Send", command=self.send)
 		self.send_button.grid(column=0, row=3, padx=30, pady=10, sticky=tk.W)
 		self.connect_button = tk.Button(self.root, text="Connect", command=self.connect)
@@ -117,7 +117,6 @@ if __name__ == '__main__':
 		try:
 			received = app.sock.recv(10000).decode("utf-8")
 			app.console.insert(tk.END, "{msg}\n".format(msg = received))
-
-			self.msg_area.focus()
+			app.console.focus()
 		except:
 			pass

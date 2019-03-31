@@ -117,7 +117,6 @@ if __name__ == '__main__':
 		try:
 			received = app.sock.recv(10000).decode("utf-8")
 			app.console.insert(tk.END, "{msg}\n".format(msg = received))
-
-			self.msg_area.focus()
+			app.console.focus()
 		except:
 			pass
