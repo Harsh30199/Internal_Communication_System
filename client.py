@@ -57,7 +57,7 @@ class App(Serializable, threading.Thread):
 		y = (win.winfo_screenheight() // 2) - (height // 2)
 		win.geometry("{}x{}+{}+{}".format(width, height, x, y)) # x, y give coordinates of upperleft corner of window
 
-		
+
 
 	def run(self):
 		self.root = tk.Tk()
@@ -69,11 +69,6 @@ class App(Serializable, threading.Thread):
 			self.root.grid_rowconfigure(n, weight=2)
 		self.create_widgets()
 		self.console.insert(tk.END, "Baby is Awake.\n")
-		self.root.grid_columnconfigure(0, weight=1)
-		for n in range(7):
-			self.root.grid_rowconfigure(n, weight=2)
-		self.create_widgets()
-		self.console.insert(tk.END, "Baby Awoke.\n")
 		self.connected = False
 		self.center(self.root)
 		self.root.mainloop()
@@ -81,7 +76,6 @@ class App(Serializable, threading.Thread):
 	def create_widgets(self):
 		self.console = tk.Text(self.root, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
 		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E) # sticky enables the widget and cell to touch each other at specified compass direction
-		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E)
 		self.msg_label = tk.Label(self.root, text="Message: ")
 		self.msg_label.grid(column=0, row=1, pady=10, sticky=tk.W+tk.E)
 		self.msg_area = tk.Text(self.root, height=6, width=58, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)

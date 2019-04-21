@@ -13,11 +13,10 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
 	def handle(self):
 		try:
-			cur_thread = threading.current_thread() #returns current thread object
 
 			print("'{ip}' requested connection.".format(ip = self.client_address[0]))
 			print("Connection request granted.")
-			#print(threading.enumerate())
+			print(threading.enumerate())
 
 
 			if threading.activeCount() > 2:
@@ -49,4 +48,3 @@ if __name__ == '__main__':
 	server = TCPServer((HOST, CONNECTION_PORT), TCPHandler)
 	server_thread = threading.Thread(target = server.serve_forever)
 	server_thread.start()
-	

@@ -37,11 +37,6 @@ class App(Serializable, threading.Thread):
 
 	def write(self, path):
 		self.serialize(path, "w").write(json.dumps(self.data)) #json.dumps() converts python object into json string
-
-		self.start()
-
-	def write(self, path):
-		self.serialize(path, "w").write(json.dumps(self.data))
 		self.file.close()
 
 	def load(self, path):
@@ -61,20 +56,7 @@ class App(Serializable, threading.Thread):
 		y = (win.winfo_screenheight() // 2) - (height // 2)
 		win.geometry("{}x{}+{}+{}".format(width, height, x, y)) # x, y give coordinates of upperleft corner of window
 
-		self.data = json.load(json_data)
-		json_data.close()
-		return self.data
 
-	def callback(self):
-		self.root.quit()
-
-	def center(self, win):
-		win.update_idletasks()
-		width = win.winfo_width()
-		height = win.winfo_height()
-		x = (win.winfo_screenwidth() // 2) - (width // 2)
-		y = (win.winfo_screenheight() // 2) - (height // 2)
-		win.geometry("{}x{}+{}+{}".format(width, height, x, y))
 
 	def run(self):
 		self.root = tk.Tk()
@@ -86,11 +68,6 @@ class App(Serializable, threading.Thread):
 			self.root.grid_rowconfigure(n, weight=2)
 		self.create_widgets()
 		self.console.insert(tk.END, "Baby is Awake.\n")
-		self.root.grid_columnconfigure(0, weight=1)
-		for n in range(7):
-			self.root.grid_rowconfigure(n, weight=2)
-		self.create_widgets()
-		self.console.insert(tk.END, "Baby Awoke.\n")
 		self.connected = False
 		self.center(self.root)
 		self.root.mainloop()
@@ -98,7 +75,7 @@ class App(Serializable, threading.Thread):
 	def create_widgets(self):
 		self.console = tk.Text(self.root, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
 		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E) # sticky enables the widget and cell to touch each other at specified compass direction
-		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E)
+
 		self.msg_label = tk.Label(self.root, text="Message: ")
 		self.msg_label.grid(column=0, row=1, pady=10, sticky=tk.W+tk.E)
 		self.msg_area = tk.Text(self.root, height=6, width=58, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
@@ -106,7 +83,7 @@ class App(Serializable, threading.Thread):
 		self.msg_area.focus()
 		self.send_button = tk.Button(self.root, text="Send", command=self.send) # command is function to call on event
 
-		self.send_button = tk.Button(self.root, text="Send", command=self.send)
+
 		self.send_button.grid(column=0, row=3, padx=30, pady=10, sticky=tk.W)
 		self.connect_button = tk.Button(self.root, text="Connect", command=self.connect)
 		self.connect_button.grid(column=0, row=3, padx=130, pady=10, sticky=tk.W)
@@ -125,7 +102,7 @@ class App(Serializable, threading.Thread):
 		if not self.connected:
 			self.host = self.data["HOST"]
 			self.console.insert(tk.END, "Connecting to {host}...\nApproaching Baby\n".format(host = self.host))
-			done = False
+
 			try:
 				self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				self.sock.connect((self.host, CONNECTION_PORT))
