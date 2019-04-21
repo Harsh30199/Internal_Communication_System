@@ -32,6 +32,12 @@ class App(Serializable, threading.Thread):
 			}
 		self.write("user3.cfg")
 		threading.Thread.__init__(self)
+
+		self.start() # starts a thread by calling run function
+
+	def write(self, path):
+		self.serialize(path, "w").write(json.dumps(self.data)) #json.dumps() converts python object into json string
+
 		self.start()
 
 	def write(self, path):
@@ -40,6 +46,21 @@ class App(Serializable, threading.Thread):
 
 	def load(self, path):
 		json_data = open(path, "r")
+		self.data = json.load(json_data) #json.load() converts json string into python dictionary
+		json_data.close()
+		return self.data
+
+	def callback(self): #used for aynchronous handling
+		self.root.quit()
+
+	def center(self, win):
+		win.update_idletasks()  # event callback to force screen update
+		width = win.winfo_width()
+		height = win.winfo_height()
+		x = (win.winfo_screenwidth() // 2) - (width // 2) # // is used for floor division
+		y = (win.winfo_screenheight() // 2) - (height // 2)
+		win.geometry("{}x{}+{}+{}".format(width, height, x, y)) # x, y give coordinates of upperleft corner of window
+
 		self.data = json.load(json_data)
 		json_data.close()
 		return self.data
@@ -60,6 +81,11 @@ class App(Serializable, threading.Thread):
 		self.root.protocol("WM_DELETE_WINDOW", self.callback)
 		self.root.title("Baby Whatsapp")
 		self.root.grid()
+		self.root.grid_columnconfigure(0, weight=1) # column resizing
+		for n in range(7):
+			self.root.grid_rowconfigure(n, weight=2)
+		self.create_widgets()
+		self.console.insert(tk.END, "Baby is Awake.\n")
 		self.root.grid_columnconfigure(0, weight=1)
 		for n in range(7):
 			self.root.grid_rowconfigure(n, weight=2)
@@ -71,11 +97,14 @@ class App(Serializable, threading.Thread):
 
 	def create_widgets(self):
 		self.console = tk.Text(self.root, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
+		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E) # sticky enables the widget and cell to touch each other at specified compass direction
 		self.console.grid(column=0, row=0, padx=25, pady=10, sticky=tk.W+tk.E)
 		self.msg_label = tk.Label(self.root, text="Message: ")
 		self.msg_label.grid(column=0, row=1, pady=10, sticky=tk.W+tk.E)
 		self.msg_area = tk.Text(self.root, height=6, width=58, bg="#000", fg="#0F0", highlightcolor="#F00", highlightthickness=2)
 		self.msg_area.grid(column=0, row=2, padx=25, pady=10, sticky=tk.W+tk.E)
+		self.msg_area.focus()
+		self.send_button = tk.Button(self.root, text="Send", command=self.send) # command is function to call on event
 
 		self.send_button = tk.Button(self.root, text="Send", command=self.send)
 		self.send_button.grid(column=0, row=3, padx=30, pady=10, sticky=tk.W)
@@ -85,7 +114,8 @@ class App(Serializable, threading.Thread):
 		self.quit_button.grid(column=0, row=3, padx=230, pady=10, sticky=tk.W)
 
 	def send(self, x=None):
-		self.sock.sendall(bytes(json.dumps({
+		self.sock.sendall(bytes(json.dumps({   #sendall sends whole buffer instead of small no of bytes
+
 			"data": self.msg_area.get("1.0", tk.END),
 			"user": self.data["NICKNAME2"]
 		}), "utf-8"))
@@ -117,11 +147,8 @@ if __name__ == '__main__':
 		try:
 			received = app.sock.recv(10000).decode("utf-8")
 			app.console.insert(tk.END, "{msg}\n".format(msg = received))
-<<<<<<< HEAD
 			app.console.focus()
-=======
 
-			self.msg_area.focus()
->>>>>>> c74d1c8db90d0047bd638135a1b7ed7170b01f69
+
 		except:
 			pass
